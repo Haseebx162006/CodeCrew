@@ -1,10 +1,10 @@
 from pathlib import Path
+import subprocess
 
-from langchain_core.tools import Tool
+from langchain_core.tools import tool
 
 @tool
 def read_file(repo_path: str, file_path: str) -> str:
-
     """
     Reads the content of a file and returns it as a string.
 
@@ -15,7 +15,6 @@ def read_file(repo_path: str, file_path: str) -> str:
     Returns:
         str: The content of the file.
     """
-
     path = Path(repo_path) / file_path
 
     if not path.exists():
@@ -38,7 +37,6 @@ def write_file(repo_path: str, file_path: str, content: str) -> str:
     Returns:
         str: A message indicating the result of the operation.
     """
-
     path = Path(repo_path) / file_path
 
     path.parent.mkdir(
@@ -51,9 +49,10 @@ def write_file(repo_path: str, file_path: str, content: str) -> str:
         return f"Successfully wrote to {file_path}."
     except Exception as e:
         return f"Error writing to {file_path}: {e}"
-    
 
 
+
+@tool
 def search_code(
     repo_path: str,
     query: str
@@ -88,9 +87,6 @@ def search_code(
         return f"No matches found for: {query}"
 
     return "\n".join(results)
-
-
-import subprocess
 
 @tool
 def run_tests(repo_path: str) -> str:

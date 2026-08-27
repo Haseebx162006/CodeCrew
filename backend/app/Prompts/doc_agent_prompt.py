@@ -60,3 +60,5 @@ Detected Information:
 """
     )
 ])
+
+doc_agent_prompt = documentation_agent_prompt

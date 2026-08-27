@@ -52,20 +52,17 @@ Return a structured summary containing:
 Repository Path:
 {repo_path}
 
-Original Task:
-{task}
-
 Subtask:
 {subtask}
 
 Repository Context:
 {context}
 
-Changed Files:
-{changed_files}
+Code Analysis:
+{analysis}
 
-Implementation Result:
-{implementation_result}
+Detected Information:
+{detected}
 """
     )
 ])
