@@ -5,7 +5,7 @@ from langchain_core.tools import tool
 
 
 @tool
-def read_file(repo_path: str, file_path: str, max_chars: int = 4000) -> str:
+def read_file(repo_path: str, file_path: str, max_chars: int = 2500) -> str:
     """
     Reads the content of a file safely, returning up to max_chars.
     If the file is a Jupyter Notebook (.ipynb), extracts code and markdown cells cleanly.
