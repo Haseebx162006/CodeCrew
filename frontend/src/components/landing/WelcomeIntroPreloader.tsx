@@ -25,9 +25,9 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
   };
 
   useEffect(() => {
-    // Paced smoothly over 9.5 seconds total
-    const COUNT_DURATION = 7500; // 7.5s from 0 to 100%
-    const TOTAL_DURATION = 9500; // 9.5s total (holds 2.0s at 100%)
+    // Paced smoothly over 6.5 seconds total
+    const COUNT_DURATION = 5200; // 5.2s from 0 to 100%
+    const TOTAL_DURATION = 6500; // 6.5s total (holds 1.3s at 100%)
     const startTime = performance.now();
 
     let animationFrameId: number;
