@@ -19,7 +19,12 @@ class Settings(BaseSettings):
     ClientID: str = ""
     GITHUB_CLIENT_ID: str = ""
     GITHUB_CLIENT_SECRET: str = ""
-    FRONTEND_URL: str = "http://localhost:3000"
+    # LangSmith Tracing & Observability
+    LANGSMITH_TRACING: str = "true"
+    LANGCHAIN_TRACING_V2: str = "true"
+    LANGSMITH_API_KEY: str = ""
+    LANGSMITH_PROJECT: str = "software-house-agent"
+    LANGSMITH_ENDPOINT: str = "https://api.smith.langchain.com"
 
     def get_groq_key(self, agent_name: str = "default") -> str:
         """Returns the specific Groq API key for an agent, falling back to GROQ_API_KEY."""
@@ -104,3 +109,12 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+# Automatically sync LangSmith environment variables if API key is provided
+if settings.LANGSMITH_API_KEY and settings.LANGSMITH_API_KEY.strip():
+    import os
+    os.environ["LANGSMITH_TRACING"] = str(settings.LANGSMITH_TRACING).lower()
+    os.environ["LANGCHAIN_TRACING_V2"] = str(settings.LANGCHAIN_TRACING_V2).lower()
+    os.environ["LANGSMITH_API_KEY"] = settings.LANGSMITH_API_KEY.strip()
+    os.environ["LANGSMITH_PROJECT"] = settings.LANGSMITH_PROJECT.strip()
+    os.environ["LANGSMITH_ENDPOINT"] = settings.LANGSMITH_ENDPOINT.strip()
