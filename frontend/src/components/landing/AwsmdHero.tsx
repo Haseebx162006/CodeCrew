@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { IsometricCubesCluster } from '../ui/IsometricCubesCluster';
-import { ArrowUpRight, Sparkles, Terminal, Cpu, Zap, CheckCircle2 } from 'lucide-react';
+import { ArrowUpRight, Terminal, Cpu, Zap, CheckCircle2, Shield, Code2, Database } from 'lucide-react';
 
 interface AwsmdHeroProps {
   onOpenWorkspace: () => void;
@@ -9,10 +9,10 @@ interface AwsmdHeroProps {
 }
 
 const SAMPLE_PROMPTS = [
-  '⚡ Stripe Webhooks with HMAC',
-  '🗄️ PostgreSQL pgvector Search',
-  '🔐 JWT Refresh Token Rotation',
-  '🎨 Next.js 15 Auth Modal',
+  { label: 'Stripe Webhooks with HMAC', icon: Code2 },
+  { label: 'PostgreSQL pgvector Search', icon: Database },
+  { label: 'JWT Refresh Token Rotation', icon: Shield },
+  { label: 'Next.js 15 Auth Modal', icon: Terminal },
 ];
 
 export const AwsmdHero: React.FC<AwsmdHeroProps> = ({ onOpenWorkspace, onOpenAuth }) => {
@@ -42,7 +42,7 @@ export const AwsmdHero: React.FC<AwsmdHeroProps> = ({ onOpenWorkspace, onOpenAut
                 <span className="font-display font-extrabold text-lg tracking-tight text-[#0F172A]">
                   CodeCrew
                 </span>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-mono font-bold">
+                <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300 text-[10px] font-mono font-bold">
                   v2.0
                 </span>
               </div>
@@ -55,14 +55,14 @@ export const AwsmdHero: React.FC<AwsmdHeroProps> = ({ onOpenWorkspace, onOpenAut
                 onClick={() => onOpenAuth('login')}
                 className="text-xs font-tech font-semibold text-[#0F172A] hover:opacity-70 transition-opacity cursor-pointer hidden sm:inline"
               >
-                sign in
+                Sign In
               </button>
               <button
                 type="button"
                 onClick={onOpenWorkspace}
                 className="px-4 py-1.5 rounded-full bg-[#0F172A] text-white text-xs font-tech font-bold uppercase tracking-wider hover:bg-black transition-all cursor-pointer shadow-xs"
               >
-                open studio
+                Open Studio
               </button>
             </div>
           </div>
@@ -79,7 +79,7 @@ export const AwsmdHero: React.FC<AwsmdHeroProps> = ({ onOpenWorkspace, onOpenAut
                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-mono text-[#0F172A] font-semibold tracking-tight"
               >
                 <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                <span>5 Autonomous Agents Ready for Your Repo</span>
+                <span>5 Autonomous Superhero Agents Ready for Your Repo</span>
               </motion.div>
 
               {/* Headline with Double-Pill Lens Badge */}
@@ -106,7 +106,7 @@ export const AwsmdHero: React.FC<AwsmdHeroProps> = ({ onOpenWorkspace, onOpenAut
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="text-xs sm:text-sm text-slate-600 font-tech leading-relaxed max-w-md"
               >
-                CodeCrew plans multi-file refactors, writes backend APIs, designs responsive UI, validates tests in isolated sandboxes, and opens verified GitHub Pull Requests in seconds.
+                An autonomous collective of specialized superhero agents. Powered by Iron Man (Backend), Spider-Man (Frontend), Hulk (Database), Captain America (Testing), and Wonder Woman (Documentation) to ship verified Pull Requests in seconds.
               </motion.p>
 
               {/* Action Buttons */}
@@ -149,16 +149,20 @@ export const AwsmdHero: React.FC<AwsmdHeroProps> = ({ onOpenWorkspace, onOpenAut
                   Quick Engineering Prompts:
                 </span>
                 <div className="flex flex-wrap gap-2">
-                  {SAMPLE_PROMPTS.map((prompt, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={onOpenWorkspace}
-                      className="px-3 py-1 rounded-lg bg-[#F8FAFC] border border-slate-200 hover:border-[#0F172A] hover:bg-white text-[11px] font-tech text-slate-700 transition-all cursor-pointer"
-                    >
-                      {prompt}
-                    </button>
-                  ))}
+                  {SAMPLE_PROMPTS.map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={onOpenWorkspace}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F8FAFC] border border-slate-200 hover:border-[#0F172A] hover:bg-white text-[11px] font-tech text-slate-700 transition-all cursor-pointer shadow-2xs"
+                      >
+                        <Icon className="w-3.5 h-3.5 text-slate-500" />
+                        <span>{item.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </motion.div>
             </div>

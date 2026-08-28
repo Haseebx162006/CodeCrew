@@ -597,7 +597,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     }));
 
     get().addNotification({
-      title: 'Agent Dispatched 🚀',
+      title: 'Agent Dispatched',
       message: `Superhero agents assembling for: "${title}"`,
       type: 'info',
     });
@@ -661,16 +661,14 @@ function generateContextualDiffs(repo: Repository, prompt: string): FileDiff[] {
 +This repository contains the architecture, pipelines, and models for **${repoName}**.
 +
 +## 🚀 Quick Start
-+\`\`\`bash
-+# Clone repository
-+git clone ${repo.url}.git
-+cd ${repoName}
++## Quick Start
 +
-+# Install dependencies
-+pip install -r requirements.txt # or npm install
++\`\`\`bash
++git clone https://github.com/looplab/seekhai.git
++cd seekhai && npm install
 +\`\`\`
 +
-+## 🏗️ Architecture & Model Specification
++## Architecture and Model Specification
 +- **Input Pipeline**: High-throughput automated batch preprocessing
 +- **Core Engine**: Deep neural convolution / residual feature extraction blocks
 +- **Optimization**: AdamW optimizer with cosine learning rate scheduling
@@ -884,7 +882,7 @@ function trackAndRunTask(taskId: string, repo: Repository, title: string) {
 
           const task = store.getState().tasks.find((t) => t.id === taskId);
           store.getState().addNotification({
-            title: 'Pull Request Created on GitHub! 🚀',
+            title: 'Pull Request Created on GitHub',
             message: `PR #${statusData.pr_url ? statusData.pr_url.split('/').pop() : '1'} is ready for review on ${task?.repo.name || 'GitHub'}.`,
             type: 'success',
           });

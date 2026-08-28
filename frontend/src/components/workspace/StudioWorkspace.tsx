@@ -235,7 +235,7 @@ export const StudioWorkspace: React.FC = () => {
                   onClick={() => handleApplyPreset(p)}
                   className="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-stone-300 font-tech transition-colors cursor-pointer"
                 >
-                  {p.category === 'security' ? '🔐 JWT' : p.category === 'feature' ? '💳 Stripe' : '⚡ Orders'}
+                  {p.category === 'security' ? 'JWT Auth' : p.category === 'feature' ? 'Stripe Billing' : 'Orders Queue'}
                 </button>
               ))}
             </div>

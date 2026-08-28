@@ -62,7 +62,7 @@ Coverage: 100% branch · 0 lint errors`,
 git commit -S -m "feat(auth): RFC-6749 JWT token rotation"
 git push origin ai-agent/feat-jwt-rotation
 
-✓ Pull Request #42 generated on GitHub (🟢 3/3 Checks Passed)`,
+✓ Pull Request #42 generated on GitHub (Passed 3/3 Checks)`,
   },
 ];
 

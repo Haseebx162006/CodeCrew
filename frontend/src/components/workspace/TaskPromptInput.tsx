@@ -70,7 +70,7 @@ export const TaskPromptInput: React.FC = () => {
                 onClick={() => handleApplyPreset(p)}
                 className="text-[11px] px-2.5 py-1 rounded-lg bg-[#F4F0E8] hover:bg-[#EAE4DA] text-stone-700 font-medium transition-colors cursor-pointer"
               >
-                {p.category === 'security' ? '🔐 JWT Rotation' : '💳 Stripe Webhook'}
+                {p.category === 'security' ? 'JWT Rotation' : 'Stripe Webhook'}
               </button>
             ))}
           </div>

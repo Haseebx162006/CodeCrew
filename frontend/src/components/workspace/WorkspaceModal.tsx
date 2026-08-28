@@ -319,7 +319,7 @@ export const WorkspaceModal: React.FC = () => {
                     onClick={() => handleApplyPreset(p)}
                     className="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-stone-300 font-tech transition-colors cursor-pointer"
                   >
-                    {p.category === 'security' ? '🔐 JWT Rotation' : '💳 Stripe Webhook'}
+                    {p.category === 'security' ? 'JWT Rotation' : 'Stripe Webhook'}
                   </button>
                 ))}
               </div>

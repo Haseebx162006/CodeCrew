@@ -43,38 +43,38 @@ const SCENARIOS: WorkflowScenario[] = [
     prompt: 'Implement Stripe checkout webhook endpoint with HMAC signature verification, idempotency lock, and invoice status DB updates.',
     steps: [
       {
-        agent: 'Architect',
-        agentName: 'Ada',
-        action: 'Analyzed codebase AST & mapped Express routes',
-        log: '✓ Discovered 12 existing endpoints · Detected Postgres pool & Stripe SDK 14.x',
-        duration: '0.12s'
-      },
-      {
         agent: 'Database',
-        agentName: 'Darius',
+        agentName: 'Hulk',
         action: 'Created migration for idempotency keys table',
-        log: '✓ Wrote migrations/005_webhook_events.sql · Created UNIQUE constraint on event_id',
+        log: 'Wrote migrations/005_webhook_events.sql · Created UNIQUE constraint on event_id',
         duration: '0.34s'
       },
       {
         agent: 'Backend',
-        agentName: 'Marcus',
+        agentName: 'Iron Man',
         action: 'Implemented webhook controller & signature verification',
-        log: '✓ Wrote src/controllers/stripe_webhook.ts · Added raw-body HMAC buffer check',
+        log: 'Wrote src/controllers/stripe_webhook.ts · Added raw-body HMAC buffer check',
         duration: '0.68s'
       },
       {
         agent: 'Testing',
-        agentName: 'Valkyrie',
-        action: 'Generated & ran Vitest replay attack test suite',
-        log: '✓ 8/8 tests passed in sandbox · 100% coverage on invalid signatures & duplicate events',
+        agentName: 'Captain America',
+        action: 'Generated & ran test replay attack test suite',
+        log: '8/8 tests passed in sandbox · 100% coverage on invalid signatures & duplicate events',
         duration: '0.41s'
       },
       {
-        agent: 'Lead',
+        agent: 'Documentation',
+        agentName: 'Wonder Woman',
+        action: 'Drafted webhook integration guide & architecture spec',
+        log: 'Wrote docs/WEBHOOKS.md with sequence flow diagrams & retry policy',
+        duration: '0.25s'
+      },
+      {
+        agent: 'Orchestrator',
         agentName: 'CodeCrew',
         action: 'Committed and opened GitHub Pull Request',
-        log: '✓ Pushed branch codecrew/stripe-webhook-idempotency · PR #28 opened',
+        log: 'Pushed branch codecrew/stripe-webhook-idempotency · PR #28 opened',
         duration: '0.19s'
       }
     ],
@@ -92,39 +92,39 @@ const SCENARIOS: WorkflowScenario[] = [
     prompt: 'Add hybrid semantic vector search combining pgvector cosine distance with tsvector keyword ranking using Reciprocal Rank Fusion (RRF).',
     steps: [
       {
-        agent: 'Architect',
-        agentName: 'Ada',
-        action: 'Inspected vector dimensions & FastAPI dependencies',
-        log: '✓ Detected PostgreSQL 16 + pgvector · 1536-dim embedding schema identified',
-        duration: '0.15s'
-      },
-      {
         agent: 'Database',
-        agentName: 'Darius',
+        agentName: 'Hulk',
         action: 'Added HNSW index and RRF SQL query functions',
-        log: '✓ Wrote sql/hybrid_search.sql with cosine similarity <=> and ts_rank fusion',
+        log: 'Wrote sql/hybrid_search.sql with cosine similarity <=> and ts_rank fusion',
         duration: '0.29s'
       },
       {
         agent: 'Backend',
-        agentName: 'Marcus',
+        agentName: 'Iron Man',
         action: 'Built FastAPI search route with score normalization',
-        log: '✓ Wrote app/routers/search.py with Pydantic request models & async session',
+        log: 'Wrote app/routers/search.py with Pydantic request models & async session',
         duration: '0.52s'
       },
       {
         agent: 'Testing',
-        agentName: 'Valkyrie',
-        action: 'Executed pytest vector retrieval accuracy benchmarks',
-        log: '✓ 12/12 tests passed · Verified Top-5 recall accuracy > 94%',
+        agentName: 'Captain America',
+        action: 'Executed test vector retrieval accuracy benchmarks',
+        log: '12/12 tests passed · Verified Top-5 recall accuracy > 94%',
         duration: '0.38s'
       },
       {
-        agent: 'Lead',
+        agent: 'Documentation',
+        agentName: 'Wonder Woman',
+        action: 'Generated OpenAPI schema and API documentation',
+        log: 'Updated openapi.json and authored docs/HYBRID_SEARCH.md',
+        duration: '0.22s'
+      },
+      {
+        agent: 'Orchestrator',
         agentName: 'CodeCrew',
         action: 'Committed and opened GitHub Pull Request',
-        log: '✓ Pushed branch codecrew/hybrid-vector-search · PR #54 opened',
-        duration: '0.22s'
+        log: 'Pushed branch codecrew/hybrid-vector-search · PR #54 opened',
+        duration: '0.18s'
       }
     ],
     prSummary: {
@@ -138,41 +138,41 @@ const SCENARIOS: WorkflowScenario[] = [
     id: 'auth-modal',
     title: 'Next.js 15 Auth Modal & OTP',
     repo: 'saas-collective/web-app',
-    prompt: 'Create a responsive modern authentication modal in Next.js 15 with 6-digit OTP verification, Tailwind v4 styling, and smooth animations.',
+    prompt: 'Create a responsive modern authentication modal in Next.js 15 with 6-digit OTP verification, Tailwind styling, and smooth animations.',
     steps: [
       {
-        agent: 'Architect',
-        agentName: 'Ada',
-        action: 'Mapped React component tree and state stores',
-        log: '✓ Identified Tailwind v4 configuration, Zustand store, and Auth API routes',
-        duration: '0.11s'
-      },
-      {
         agent: 'Frontend',
-        agentName: 'Elena',
+        agentName: 'Spider-Man',
         action: 'Constructed AuthModal component with OTP inputs',
-        log: '✓ Wrote src/components/AuthModal.tsx with Framer Motion spring physics',
+        log: 'Wrote src/components/AuthModal.tsx with Framer Motion physics & Tailwind styles',
         duration: '0.74s'
       },
       {
         agent: 'Backend',
-        agentName: 'Marcus',
+        agentName: 'Iron Man',
         action: 'Added OTP generation & verification endpoints',
-        log: '✓ Wrote src/app/api/auth/otp/route.ts with rate-limiting & hash check',
+        log: 'Wrote src/app/api/auth/otp/route.ts with rate-limiting & hash check',
         duration: '0.45s'
       },
       {
         agent: 'Testing',
-        agentName: 'Valkyrie',
+        agentName: 'Captain America',
         action: 'Verified keyboard navigation and form validation',
-        log: '✓ 6/6 UI accessibility & unit tests passed without errors',
+        log: '6/6 UI accessibility & unit tests passed without errors',
         duration: '0.31s'
       },
       {
-        agent: 'Lead',
+        agent: 'Documentation',
+        agentName: 'Wonder Woman',
+        action: 'Documented authentication flow and component usage',
+        log: 'Authored docs/AUTH_MODAL_GUIDE.md with prop interfaces and examples',
+        duration: '0.20s'
+      },
+      {
+        agent: 'Orchestrator',
         agentName: 'CodeCrew',
         action: 'Committed and opened GitHub Pull Request',
-        log: '✓ Pushed branch codecrew/modern-auth-modal · PR #12 opened',
+        log: 'Pushed branch codecrew/modern-auth-modal · PR #12 opened',
         duration: '0.18s'
       }
     ],
@@ -214,10 +214,10 @@ export const LiveWorkflowSimulator: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-slate-100">
           <div>
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-semibold block mb-1">
-              interactive workflow preview
+              Interactive Workflow Preview
             </span>
             <h2 className="text-2xl sm:text-3xl font-bold font-display text-[#0F172A]">
-              Watch the Crew Execute a Real Task.
+              Watch the Superhero Crew Execute a Real Task.
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-tech mt-1">
               Select an engineering task below and simulate how the agents coordinate in real time.
@@ -363,7 +363,7 @@ export const LiveWorkflowSimulator: React.FC = () => {
                   <span>GitHub Pull Request</span>
                 </div>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">
-                  {currentStepIndex >= activeScenario.steps.length ? '🟢 Open & Ready' : 'Pending Synthesis'}
+                  {currentStepIndex >= activeScenario.steps.length ? 'Open & Ready' : 'Pending Synthesis'}
                 </span>
               </div>
 

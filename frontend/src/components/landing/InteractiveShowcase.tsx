@@ -105,7 +105,7 @@ git push origin ai-agent/feat-jwt-rotation
 
 ✓ GitHub Pull Request #42 opened:
   https://github.com/my-org/ecommerce-core/pull/42
-  Status: All CI Checks Passed (🟢 3/3)`,
+  Status: All CI Checks Passed (3/3)`,
   },
 ];
 

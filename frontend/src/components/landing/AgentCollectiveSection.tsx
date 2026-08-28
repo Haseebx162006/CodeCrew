@@ -5,8 +5,8 @@ import {
   Cpu, 
   Code2, 
   Database, 
-  ShieldAlert, 
-  BookOpen, 
+  Shield, 
+  FileText, 
   CheckCircle2, 
   ArrowUpRight, 
   Sparkles,
@@ -17,6 +17,7 @@ import {
 interface AgentProfile {
   id: string;
   name: string;
+  heroAlias: string;
   role: string;
   badge: string;
   avatarIcon: React.ElementType;
@@ -34,52 +35,22 @@ interface AgentProfile {
 
 const AGENTS: AgentProfile[] = [
   {
-    id: 'planner',
-    name: 'Ada (Lead Architect)',
-    role: 'AST Analysis & Topological Planning',
-    badge: 'Orchestrator',
-    avatarIcon: Cpu,
-    accentColor: '#3B82F6',
-    bgLight: '#EFF6FF',
-    description: 'Deconstructs high-level human prompts into atomic subtasks with resolved dependency graphs and type-safe module mapping.',
-    responsibilities: [
-      'AST Symbol Graph Construction',
-      'Cyclic Dependency Resolution',
-      'Subtask Topological Ordering',
-      'Target Module Detection'
-    ],
-    techStack: ['LangGraph', 'Tree-Sitter AST', 'NetworkX', 'Groq LPU'],
-    sampleOutput: {
-      filename: 'execution_plan.json',
-      lang: 'json',
-      code: `{
-  "plan_id": "plan_948a_jwt_rotation",
-  "root_objective": "RFC-6749 Refresh Token Rotation with Redis Blacklist",
-  "subtasks": [
-    { "id": "t1", "agent": "database", "target": "schema/refresh_tokens.sql", "deps": [] },
-    { "id": "t2", "agent": "backend", "target": "src/auth/jwt.service.ts", "deps": ["t1"] },
-    { "id": "t3", "agent": "testing", "target": "tests/auth.spec.ts", "deps": ["t2"] }
-  ],
-  "estimated_execution_time": "1.8s"
-}`
-    }
-  },
-  {
     id: 'backend',
-    name: 'Marcus (Backend Engineer)',
-    role: 'APIs, Business Logic & Security',
+    name: 'Iron Man',
+    heroAlias: 'The Arc Reactor Engine',
+    role: 'Backend Agent & API Architect',
     badge: 'Core Engine',
-    avatarIcon: Code2,
-    accentColor: '#10B981',
-    bgLight: '#ECFDF5',
-    description: 'Writes type-safe backend APIs, async worker queues, cryptographic hashing, and enterprise business domain logic.',
+    avatarIcon: Cpu,
+    accentColor: '#D97706',
+    bgLight: '#FFFBEB',
+    description: 'Powers high-throughput API endpoints, async worker queues, cryptographic hashing, and enterprise business domain logic.',
     responsibilities: [
-      'REST & GraphQL API Endpoints',
-      'JWT/OAuth2 & HMAC Authentication',
-      'Async Service Architecture',
-      'Strict Schema Validation'
+      'High-Throughput FastAPI & Express APIs',
+      'JWT, OAuth2 & HMAC Signature Verification',
+      'Async Queues & Microsecond Routing',
+      'Strict Pydantic & Zod Data Validation'
     ],
-    techStack: ['Node.js', 'FastAPI', 'TypeScript', 'Express', 'Python'],
+    techStack: ['Node.js', 'FastAPI', 'TypeScript', 'Python', 'Redis'],
     sampleOutput: {
       filename: 'src/services/jwt_auth.service.ts',
       lang: 'typescript',
@@ -98,20 +69,21 @@ const AGENTS: AgentProfile[] = [
   },
   {
     id: 'frontend',
-    name: 'Elena (Frontend Engineer)',
-    role: 'Modern UI, State & Motion',
+    name: 'Spider-Man',
+    heroAlias: 'The Web-Slinger of UI',
+    role: 'Frontend Agent & UI/UX Visionary',
     badge: 'Client Engine',
-    avatarIcon: Sparkles,
-    accentColor: '#8B5CF6',
-    bgLight: '#F5F3FF',
-    description: 'Builds pixel-perfect React/Next.js components, fluid Tailwind v4 styles, responsive layouts, and interactive state management.',
+    avatarIcon: Zap,
+    accentColor: '#DC2626',
+    bgLight: '#FEF2F2',
+    description: 'Weaves pixel-perfect React/Next.js components, fluid Tailwind styles, responsive layouts, and reactive state stores.',
     responsibilities: [
-      'Tailwind CSS v4 & Obsidian Themes',
-      'React 19 Hooks & State Stores',
-      'Micro-Interactions & Motion',
-      'Accessibility & Screen Reader QA'
+      'Tailwind CSS & Obsidian Themes',
+      'React 19 Hooks & Kinetic Motion',
+      'Pixel-Perfect Responsive Layouts',
+      'Zero-Latency Reactive State Management'
     ],
-    techStack: ['React 19', 'Next.js 15', 'Tailwind v4', 'Framer Motion'],
+    techStack: ['React 19', 'Next.js 15', 'Tailwind CSS', 'Framer Motion'],
     sampleOutput: {
       filename: 'src/components/TokenExpirationBanner.tsx',
       lang: 'tsx',
@@ -124,7 +96,7 @@ const AGENTS: AgentProfile[] = [
       animate={{ opacity: 1, y: 0 }}
       className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between"
     >
-      <span className="text-xs font-mono text-amber-200">Session expiring in 2m. Auto-rotating...</span>
+      <span className="text-xs font-mono text-amber-900">Session expiring in 2m. Auto-rotating...</span>
       <button onClick={refreshSession} className="px-3 py-1 bg-amber-500 text-black text-xs font-bold rounded-lg">
         Refresh Now
       </button>
@@ -135,20 +107,21 @@ const AGENTS: AgentProfile[] = [
   },
   {
     id: 'database',
-    name: 'Darius (Database Architect)',
-    role: 'PostgreSQL, Vector DB & Schemas',
+    name: 'Hulk',
+    heroAlias: 'The Gamma Schema Titan',
+    role: 'Database Agent & Schema Powerhouse',
     badge: 'Data Engine',
     avatarIcon: Database,
-    accentColor: '#F59E0B',
-    bgLight: '#FFFBEB',
-    description: 'Designs normalized SQL schemas, ACID transaction rollbacks, index strategies, and pgvector embeddings.',
+    accentColor: '#059669',
+    bgLight: '#ECFDF5',
+    description: 'Crushes slow queries, designs normalized SQL schemas, ACID transaction rollbacks, and pgvector embeddings.',
     responsibilities: [
-      'Zero-Downtime Migration Scripts',
+      'Massive SQL Migrations & Relational Schemas',
       'pgvector 1536-dim Embedding Tables',
-      'B-Tree & GIN Index Tuning',
-      'Row Level Security (RLS) Policies'
+      'High-Throughput PostgreSQL & Neon Tuning',
+      'ACID Resilience & Schema Integrity'
     ],
-    techStack: ['PostgreSQL', 'pgvector', 'Prisma', 'SQLAlchemy', 'Redis'],
+    techStack: ['PostgreSQL', 'pgvector', 'Prisma', 'SQLAlchemy', 'Neon'],
     sampleOutput: {
       filename: 'migrations/004_create_refresh_tokens.sql',
       lang: 'sql',
@@ -166,20 +139,21 @@ CREATE INDEX idx_refresh_token_lookup ON refresh_tokens(token_hash) WHERE is_rev
   },
   {
     id: 'testing',
-    name: 'Valkyrie (QA & Testing Lead)',
-    role: 'Vitest, Sandbox & Regression Shield',
+    name: 'Captain America',
+    heroAlias: 'The Vibranium Test Shield',
+    role: 'Testing & QA Guardian',
     badge: 'Guardian Engine',
-    avatarIcon: ShieldAlert,
-    accentColor: '#EC4899',
-    bgLight: '#FDF2F8',
-    description: 'Generates comprehensive test suites, mocks external dependencies, and validates 100% test passing in isolated sandboxes.',
+    avatarIcon: Shield,
+    accentColor: '#2563EB',
+    bgLight: '#EFF6FF',
+    description: 'Deploys bulletproof test suites, edge-case traps, and validates 100% test pass rates in isolated air-gapped sandboxes.',
     responsibilities: [
-      'Automated Vitest & Pytest Specs',
-      'Edge-Case & Replay Attack Fuzzing',
-      '100% Branch Coverage Verification',
+      'Bulletproof Unit & Integration Test Suites',
+      'Zero-Regression Guard & Edge-Case Traps',
+      'Automated CI/CD Pipeline Verification',
       'Air-Gapped Sandbox Execution'
     ],
-    techStack: ['Vitest', 'Pytest', 'Playwright', 'Jest', 'MockWebServer'],
+    techStack: ['Vitest', 'Pytest', 'Playwright', 'Jest', 'MockServer'],
     sampleOutput: {
       filename: 'tests/auth_rotation.spec.ts',
       lang: 'typescript',
@@ -198,24 +172,25 @@ CREATE INDEX idx_refresh_token_lookup ON refresh_tokens(token_hash) WHERE is_rev
   },
   {
     id: 'docs',
-    name: 'Scribe (Documentation Engineer)',
-    role: 'API Specs, Architecture & Markdown',
+    name: 'Wonder Woman',
+    heroAlias: 'The Lasso of Truth & Clarity',
+    role: 'Documentation & Architecture Agent',
     badge: 'Docs Engine',
-    avatarIcon: BookOpen,
-    accentColor: '#06B6D4',
-    bgLight: '#ECFEFF',
-    description: 'Compiles clean architectural documentation, OpenAPI Swagger specifications, sequence diagrams, and PR changelogs.',
+    avatarIcon: FileText,
+    accentColor: '#DB2777',
+    bgLight: '#FDF2F8',
+    description: 'Wields the Lasso of Truth to bring architectural clarity, OpenAPI specs, sequence diagrams, and PR changelogs.',
     responsibilities: [
-      'Architecture & Sequence Diagrams',
-      'OpenAPI 3.1 & Swagger Specs',
-      'Production-Ready README Guides',
-      'GPG-Signed PR Changelogs'
+      'Lasso of Truth OpenAPI 3.1 Specs',
+      'Living Architecture Blueprints & Diagrams',
+      'Comprehensive Developer Guides & SDK Docs',
+      'Detailed Pull Request Changelogs'
     ],
     techStack: ['Markdown', 'OpenAPI 3.1', 'Mermaid.js', 'TypeDoc'],
     sampleOutput: {
       filename: 'docs/AUTH_ARCHITECTURE.md',
       lang: 'markdown',
-      code: `# 🔐 Authentication & Session Architecture
+      code: `# Authentication & Session Architecture
 
 ## Token Rotation Flow
 \`\`\`mermaid
@@ -242,24 +217,24 @@ export const AgentCollectiveSection: React.FC = () => {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-[#0F172A] text-xs font-mono font-semibold mb-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>THE AUTONOMOUS COLLECTIVE</span>
+              <span>THE SUPERHERO COLLECTIVE</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold font-display text-[#0F172A] tracking-tight">
               Meet Your 5-Agent Software House.
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-tech mt-1 max-w-xl">
-              Each specialized agent possesses isolated domain expertise. Coordinated by LangGraph, they collaborate to turn raw issues into verified Pull Requests.
+              Each superhero agent commands a specialized domain. Coordinated by LangGraph, they collaborate to turn raw prompts into tested GitHub Pull Requests.
             </p>
           </div>
 
           <div className="text-right hidden md:block">
-            <span className="text-xs font-mono text-slate-400">Zero Prompt Token Waste</span>
-            <div className="text-sm font-bold font-tech text-[#0F172A]">Postgres State Memory Active</div>
+            <span className="text-xs font-mono text-slate-400">Zero Token Hallucination</span>
+            <div className="text-sm font-bold font-tech text-[#0F172A]">Postgres State Checkpointer Active</div>
           </div>
         </div>
 
         {/* Agent Selector Badges */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
           {AGENTS.map((agent) => {
             const Icon = agent.avatarIcon;
             const isSelected = selectedAgent.id === agent.id;
@@ -292,7 +267,7 @@ export const AgentCollectiveSection: React.FC = () => {
                 </div>
                 <div>
                   <div className="text-xs font-bold font-display leading-tight truncate">
-                    {agent.name.split(' ')[0]}
+                    {agent.name}
                   </div>
                   <div
                     className={`text-[10px] font-tech truncate ${
@@ -329,7 +304,7 @@ export const AgentCollectiveSection: React.FC = () => {
                       {selectedAgent.name}
                     </h3>
                     <span className="text-xs font-mono text-slate-500 block">
-                      {selectedAgent.role}
+                      {selectedAgent.heroAlias} · {selectedAgent.role}
                     </span>
                   </div>
                 </div>
@@ -386,7 +361,7 @@ export const AgentCollectiveSection: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="px-2 py-0.5 rounded-full bg-white/10 text-emerald-400 text-[10px]">
-                    Generated by {selectedAgent.name.split(' ')[0]}
+                    Generated by {selectedAgent.name}
                   </span>
                 </div>
               </div>
