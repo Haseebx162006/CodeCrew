@@ -6,10 +6,10 @@ interface WelcomeIntroPreloaderProps {
 }
 
 const WORDS = [
-  { text: 'AUTONOMOUS CREW', color: 'text-[#475569]' },
-  { text: 'AST INGESTION', color: 'text-[#0F172A]' },
-  { text: 'SUPERHERO AGENTS', color: 'text-[#2563EB]' },
-  { text: 'PULL REQUESTS', color: 'text-[#0F172A]' },
+  { text: 'AUTONOMOUS CREW', minPct: 0, activeColor: 'text-[#0F172A]', inactiveColor: 'text-slate-400' },
+  { text: 'AST INGESTION', minPct: 25, activeColor: 'text-[#0F172A]', inactiveColor: 'text-slate-400' },
+  { text: 'SUPERHERO AGENTS', minPct: 50, activeColor: 'text-[#2563EB]', inactiveColor: 'text-blue-300' },
+  { text: 'PULL REQUESTS', minPct: 75, activeColor: 'text-[#0F172A]', inactiveColor: 'text-slate-400' },
 ];
 
 export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ onComplete }) => {
@@ -20,22 +20,14 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
   const handleDismiss = () => {
     if (dismissedRef.current) return;
     dismissedRef.current = true;
-    sessionStorage.setItem('codecrew_intro_seen', 'true');
     setIsVisible(false);
     onComplete?.();
   };
 
   useEffect(() => {
-    // Check if user already saw the intro during this browser session
-    const hasSeenIntro = sessionStorage.getItem('codecrew_intro_seen');
-    if (hasSeenIntro) {
-      setIsVisible(false);
-      onComplete?.();
-      return;
-    }
-
-    const COUNT_DURATION = 6400; // 6.4s from 0 to 100%
-    const TOTAL_DURATION = 8000; // 8.0s total before curtain slide
+    // Paced smoothly over 9.5 seconds total
+    const COUNT_DURATION = 7500; // 7.5s from 0 to 100%
+    const TOTAL_DURATION = 9500; // 9.5s total (holds 2.0s at 100%)
     const startTime = performance.now();
 
     let animationFrameId: number;
@@ -60,7 +52,7 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
 
     animationFrameId = requestAnimationFrame(tick);
 
-    // Hard fallback timeout: guaranteed dismiss after exactly 3.8s
+    // Guaranteed fallback dismiss at 9.5s
     const fallbackTimer = setTimeout(() => {
       handleDismiss();
     }, TOTAL_DURATION);
@@ -78,7 +70,7 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
           initial={{ y: 0 }}
           exit={{ 
             y: '-100%',
-            transition: { duration: 0.85, ease: [0.76, 0, 0.24, 1] }
+            transition: { duration: 0.95, ease: [0.76, 0, 0.24, 1] }
           }}
           className="fixed inset-0 z-[9999] bg-[#CBD5E1] text-[#0F172A] flex flex-col justify-between p-6 sm:p-12 lg:p-16 select-none overflow-hidden cursor-pointer"
           onClick={handleDismiss}
@@ -87,7 +79,7 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
           <div className="flex items-start justify-between z-10">
             <div className="flex items-center gap-3.5">
               {/* Double Concentric Pulsing Ring */}
-              <div className="relative w-8 h-8 flex items-center justify-center">
+              <div className="relative w-9 h-9 flex items-center justify-center">
                 <span className="absolute w-full h-full rounded-full border-[1.5px] border-[#0F172A]/40 animate-ping opacity-60" />
                 <span className="w-6 h-6 rounded-full border-[2px] border-[#0F172A] flex items-center justify-center">
                   <span className="w-2 h-2 rounded-full bg-[#0F172A]" />
@@ -95,7 +87,7 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
               </div>
 
               <div>
-                <div className="text-sm sm:text-base font-extrabold font-mono text-[#0F172A] tracking-tight">
+                <div className="text-base sm:text-lg font-extrabold font-mono text-[#0F172A] tracking-tight">
                   {progress}%
                 </div>
                 <div className="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
@@ -111,29 +103,38 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
                 e.stopPropagation();
                 handleDismiss();
               }}
-              className="px-3.5 py-1 rounded-full border border-[#0F172A]/30 text-[11px] font-mono uppercase tracking-wider text-slate-700 hover:bg-[#0F172A] hover:text-white transition-all cursor-pointer"
+              className="px-4 py-1.5 rounded-full border border-[#0F172A]/40 text-xs font-mono uppercase tracking-wider text-[#0F172A] hover:bg-[#0F172A] hover:text-white transition-all cursor-pointer font-bold shadow-2xs"
             >
-              Skip
+              Skip Intro
             </button>
           </div>
 
-          {/* Center Giant Typographic Word Stack */}
+          {/* Center Giant Typographic Word Stack with Progressive Illuminations */}
           <div className="my-auto py-4 space-y-1 sm:space-y-2">
-            {WORDS.map((item, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ 
-                  duration: 0.6, 
-                  delay: idx * 0.12, 
-                  ease: [0.16, 1, 0.3, 1] 
-                }}
-                className={`text-4xl sm:text-7xl lg:text-8xl xl:text-9xl font-black font-display tracking-tighter leading-[0.92] uppercase ${item.color}`}
-              >
-                {item.text}
-              </motion.div>
-            ))}
+            {WORDS.map((item, idx) => {
+              const isActivated = progress >= item.minPct;
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ 
+                    opacity: isActivated ? 1 : 0.35, 
+                    x: 0,
+                    scale: isActivated ? 1 : 0.98
+                  }}
+                  transition={{ 
+                    duration: 0.8, 
+                    delay: idx * 0.18, 
+                    ease: [0.16, 1, 0.3, 1] 
+                  }}
+                  className={`text-4xl sm:text-7xl lg:text-8xl xl:text-9xl font-black font-display tracking-tighter leading-[0.92] uppercase transition-colors duration-500 ${
+                    isActivated ? item.activeColor : item.inactiveColor
+                  }`}
+                >
+                  {item.text}
+                </motion.div>
+              );
+            })}
           </div>
 
           {/* Bottom Bar Telemetry */}
