@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LenisProvider } from './components/landing/LenisProvider';
 import { CustomCursor } from './components/landing/CustomCursor';
+import { WelcomeIntroPreloader } from './components/landing/WelcomeIntroPreloader';
 import { ModernistNavbar } from './components/layout/ModernistNavbar';
 import { AwsmdHero } from './components/landing/AwsmdHero';
 import { AgentCollectiveSection } from './components/landing/AgentCollectiveSection';
@@ -68,6 +69,9 @@ export const App: React.FC = () => {
   return (
     <LenisProvider>
       <div className="min-h-screen bg-[#7D8DA5] text-[#0F172A] relative overflow-x-hidden select-none">
+        {/* Animated Cinematic Welcome Preloader Screen */}
+        <WelcomeIntroPreloader />
+
         {/* Trailing Spring Magnetic Cursor */}
         <CustomCursor />
 
