@@ -25,9 +25,9 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
       return;
     }
 
-    // Smooth realistic percentage counter from 0 to 100
-    const duration = 2000; // 2.0 seconds
-    const interval = 20;
+    // Smooth percentage counter paced over 3.5 seconds
+    const duration = 3500;
+    const interval = 25;
     const step = 100 / (duration / interval);
 
     const timer = setInterval(() => {
@@ -35,9 +35,10 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
         const next = prev + step;
         if (next >= 100) {
           clearInterval(timer);
+          // Hold at 100% for 1 second so visitors can comfortably view the full screen
           setTimeout(() => {
             handleDismiss();
-          }, 350);
+          }, 1000);
           return 100;
         }
         return Math.floor(next);
@@ -60,7 +61,7 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
           initial={{ y: 0 }}
           exit={{ 
             y: '-100%',
-            transition: { duration: 0.85, ease: [0.76, 0, 0.24, 1] }
+            transition: { duration: 0.95, ease: [0.76, 0, 0.24, 1] }
           }}
           className="fixed inset-0 z-[9999] bg-[#CBD5E1] text-[#0F172A] flex flex-col justify-between p-6 sm:p-12 lg:p-16 select-none overflow-hidden cursor-pointer"
           onClick={handleDismiss}
@@ -86,7 +87,7 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
               </div>
             </div>
 
-            {/* Skip Hint */}
+            {/* Skip Button */}
             <button
               type="button"
               onClick={handleDismiss}
@@ -104,8 +105,8 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ 
-                  duration: 0.6, 
-                  delay: idx * 0.12, 
+                  duration: 0.7, 
+                  delay: idx * 0.16, 
                   ease: [0.16, 1, 0.3, 1] 
                 }}
                 className={`text-4xl sm:text-7xl lg:text-8xl xl:text-9xl font-black font-display tracking-tighter leading-[0.92] uppercase ${item.color}`}
