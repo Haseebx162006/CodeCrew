@@ -97,9 +97,22 @@ const INITIAL_STAGES: ExecutionStage[] = [
   },
 ];
 
+const getStoredUser = (): User | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem('cached_user');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
+const hasInitialToken = typeof window !== 'undefined' && Boolean(localStorage.getItem('auth_token'));
+const storedUser = getStoredUser();
+
 export const useAppStore = create<AppState>((set, get) => ({
-  user: null,
-  isAuthenticated: false,
+  user: storedUser,
+  isAuthenticated: Boolean(hasInitialToken && storedUser),
   isAuthLoading: false,
   authError: null,
   authView: 'signup',
@@ -149,6 +162,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         try {
           const user = await authApi.getMe(urlToken);
           if (user) {
+            localStorage.setItem('cached_user', JSON.stringify(user));
+            localStorage.setItem('active_view', 'workspace');
             set({ user, isAuthenticated: true, showHeroShowcase: true, isAuthLoading: false });
             get().addNotification({
               title: 'GitHub Authenticated',
@@ -172,6 +187,8 @@ export const useAppStore = create<AppState>((set, get) => ({
             urlCode || undefined,
             urlInstallId ? parseInt(urlInstallId, 10) : undefined
           );
+          localStorage.setItem('cached_user', JSON.stringify(user));
+          localStorage.setItem('active_view', 'workspace');
           set({ user, isAuthenticated: true, showHeroShowcase: true, isAuthLoading: false });
           get().addNotification({
             title: 'GitHub Authenticated',
@@ -194,13 +211,15 @@ export const useAppStore = create<AppState>((set, get) => ({
       try {
         const user = await authApi.getMe(token);
         if (user) {
+          localStorage.setItem('cached_user', JSON.stringify(user));
           set({ user, isAuthenticated: true });
           get().fetchRepositories(user.githubUsername);
         } else {
+          localStorage.removeItem('cached_user');
           set({ user: null, isAuthenticated: false });
         }
       } catch {
-        set({ user: null, isAuthenticated: false });
+        // Keep existing cached user if offline or temporary network blip
       } finally {
         set({ isAuthLoading: false });
       }
@@ -372,6 +391,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ isAuthLoading: true, authError: null });
     try {
       const { user } = await authApi.register(data);
+      localStorage.setItem('cached_user', JSON.stringify(user));
+      localStorage.setItem('active_view', 'workspace');
       set({ user, isAuthenticated: true, showHeroShowcase: true, isAuthLoading: false, authError: null });
       get().addNotification({
         title: 'Account Created',
@@ -399,6 +420,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ isAuthLoading: true, authError: null });
     try {
       const { user } = await authApi.login({ email, password });
+      localStorage.setItem('cached_user', JSON.stringify(user));
+      localStorage.setItem('active_view', 'workspace');
       set({ user, isAuthenticated: true, showHeroShowcase: true, isAuthLoading: false, authError: null });
       get().addNotification({
         title: 'Signed In Successfully',
@@ -439,6 +462,8 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   logout: () => {
     authApi.logout();
+    localStorage.removeItem('cached_user');
+    localStorage.removeItem('active_view');
     set({ isAuthenticated: false, user: null, activeTaskId: null, showHeroShowcase: false, authError: null });
   },
 

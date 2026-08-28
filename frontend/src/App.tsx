@@ -13,8 +13,18 @@ import { NotificationToast } from './components/ui/NotificationToast';
 import { useAppStore } from './store/appStore';
 
 export const App: React.FC = () => {
-  const { showHeroShowcase, setShowHeroShowcase, initAuth } = useAppStore();
-  const [activeView, setActiveView] = useState<'landing' | 'workspace'>('landing');
+  const { showHeroShowcase, setShowHeroShowcase, initAuth, isAuthenticated } = useAppStore();
+  
+  // Persist and restore active view on page refresh
+  const [activeView, setActiveView] = useState<'landing' | 'workspace'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('active_view');
+      if (saved === 'workspace' || saved === 'landing') return saved;
+      if (localStorage.getItem('auth_token')) return 'workspace';
+    }
+    return 'landing';
+  });
+
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('signup');
 
@@ -23,13 +33,26 @@ export const App: React.FC = () => {
     initAuth();
   }, [initAuth]);
 
+  // Keep view in sync if auth state changes
+  useEffect(() => {
+    if (isAuthenticated && !localStorage.getItem('active_view')) {
+      setActiveView('workspace');
+      localStorage.setItem('active_view', 'workspace');
+    }
+  }, [isAuthenticated]);
+
+  const handleSetView = (view: 'landing' | 'workspace') => {
+    setActiveView(view);
+    localStorage.setItem('active_view', view);
+  };
+
   const handleOpenAuth = (mode: 'login' | 'signup' = 'signup') => {
     setAuthModalMode(mode);
     setIsAuthModalOpen(true);
   };
 
   const handleOpenWorkspace = () => {
-    setActiveView('workspace');
+    handleSetView('workspace');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -49,7 +72,7 @@ export const App: React.FC = () => {
           onOpenWorkspace={handleOpenWorkspace}
           onOpenAuth={handleOpenAuth}
           activeView={activeView}
-          setActiveView={setActiveView}
+          setActiveView={handleSetView}
         />
 
         {/* View Switcher: Reference-Style Modernist Hero Showcase vs Pro Studio */}
