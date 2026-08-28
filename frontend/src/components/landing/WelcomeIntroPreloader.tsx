@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface WelcomeIntroPreloaderProps {
@@ -15,6 +15,15 @@ const WORDS = [
 export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ onComplete }) => {
   const [progress, setProgress] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true);
+  const dismissedRef = useRef<boolean>(false);
+
+  const handleDismiss = () => {
+    if (dismissedRef.current) return;
+    dismissedRef.current = true;
+    sessionStorage.setItem('codecrew_intro_seen', 'true');
+    setIsVisible(false);
+    onComplete?.();
+  };
 
   useEffect(() => {
     // Check if user already saw the intro during this browser session
@@ -25,34 +34,42 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
       return;
     }
 
-    // Smooth percentage counter paced over 3.5 seconds
-    const duration = 3500;
-    const interval = 25;
-    const step = 100 / (duration / interval);
+    const COUNT_DURATION = 3200; // 3.2s from 0 to 100%
+    const TOTAL_DURATION = 3800; // 3.8s total before curtain slide
+    const startTime = performance.now();
 
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        const next = prev + step;
-        if (next >= 100) {
-          clearInterval(timer);
-          // Hold at 100% for 1 second so visitors can comfortably view the full screen
-          setTimeout(() => {
-            handleDismiss();
-          }, 1000);
-          return 100;
-        }
-        return Math.floor(next);
-      });
-    }, interval);
+    let animationFrameId: number;
 
-    return () => clearInterval(timer);
+    const tick = (now: number) => {
+      if (dismissedRef.current) return;
+
+      const elapsed = now - startTime;
+
+      if (elapsed < COUNT_DURATION) {
+        const pct = Math.min(100, Math.floor((elapsed / COUNT_DURATION) * 100));
+        setProgress(pct);
+        animationFrameId = requestAnimationFrame(tick);
+      } else if (elapsed < TOTAL_DURATION) {
+        setProgress(100);
+        animationFrameId = requestAnimationFrame(tick);
+      } else {
+        setProgress(100);
+        handleDismiss();
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(tick);
+
+    // Hard fallback timeout: guaranteed dismiss after exactly 3.8s
+    const fallbackTimer = setTimeout(() => {
+      handleDismiss();
+    }, TOTAL_DURATION);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      clearTimeout(fallbackTimer);
+    };
   }, []);
-
-  const handleDismiss = () => {
-    sessionStorage.setItem('codecrew_intro_seen', 'true');
-    setIsVisible(false);
-    onComplete?.();
-  };
 
   return (
     <AnimatePresence>
@@ -61,7 +78,7 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
           initial={{ y: 0 }}
           exit={{ 
             y: '-100%',
-            transition: { duration: 0.95, ease: [0.76, 0, 0.24, 1] }
+            transition: { duration: 0.85, ease: [0.76, 0, 0.24, 1] }
           }}
           className="fixed inset-0 z-[9999] bg-[#CBD5E1] text-[#0F172A] flex flex-col justify-between p-6 sm:p-12 lg:p-16 select-none overflow-hidden cursor-pointer"
           onClick={handleDismiss}
@@ -90,7 +107,10 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
             {/* Skip Button */}
             <button
               type="button"
-              onClick={handleDismiss}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDismiss();
+              }}
               className="px-3.5 py-1 rounded-full border border-[#0F172A]/30 text-[11px] font-mono uppercase tracking-wider text-slate-700 hover:bg-[#0F172A] hover:text-white transition-all cursor-pointer"
             >
               Skip
@@ -105,8 +125,8 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ 
-                  duration: 0.7, 
-                  delay: idx * 0.16, 
+                  duration: 0.6, 
+                  delay: idx * 0.12, 
                   ease: [0.16, 1, 0.3, 1] 
                 }}
                 className={`text-4xl sm:text-7xl lg:text-8xl xl:text-9xl font-black font-display tracking-tighter leading-[0.92] uppercase ${item.color}`}
