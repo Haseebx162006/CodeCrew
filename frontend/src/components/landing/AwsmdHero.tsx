@@ -1,42 +1,49 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { IsometricCubesCluster } from '../ui/IsometricCubesCluster';
-import { ArrowUpRight, Sparkles } from 'lucide-react';
+import { ArrowUpRight, Sparkles, Terminal, Cpu, Zap, CheckCircle2 } from 'lucide-react';
 
 interface AwsmdHeroProps {
   onOpenWorkspace: () => void;
   onOpenAuth: (mode?: 'login' | 'signup') => void;
 }
 
+const SAMPLE_PROMPTS = [
+  '⚡ Stripe Webhooks with HMAC',
+  '🗄️ PostgreSQL pgvector Search',
+  '🔐 JWT Refresh Token Rotation',
+  '🎨 Next.js 15 Auth Modal',
+];
+
 export const AwsmdHero: React.FC<AwsmdHeroProps> = ({ onOpenWorkspace, onOpenAuth }) => {
   return (
     <section className="relative w-full min-h-screen flex items-center justify-center p-4 sm:p-8 lg:p-12">
       {/* Outer Slate-Periwinkle Framing Container */}
       <div className="w-full max-w-6xl mx-auto flex flex-col gap-3">
-        {/* Top Labels outside frame (From reference) */}
+        {/* Top Labels outside frame */}
         <div className="flex items-center justify-between text-xs font-mono tracking-wider text-slate-200 uppercase px-3 select-none">
-          <span>landing page</span>
-          <span>ai engineering system</span>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>AI SOFTWARE HOUSE COLLECTIVE</span>
+          </div>
+          <span>LANGGRAPH · NEON POSTGRES · GROQ</span>
         </div>
 
         {/* Main Framed White Card with 1.5px Black Outline */}
-        <div className="relative w-full bg-white rounded-[32px] border-[1.5px] border-[#0F172A] shadow-2xl p-6 sm:p-10 lg:p-14 overflow-hidden flex flex-col justify-between min-h-[640px]">
+        <div className="relative w-full bg-white rounded-[32px] border-[1.5px] border-[#0F172A] shadow-2xl p-6 sm:p-10 lg:p-14 overflow-hidden flex flex-col justify-between min-h-[660px]">
           {/* Inner Header Bar */}
           <div className="flex items-center justify-between z-10 select-none pb-4">
             <div className="flex items-center gap-4">
-              {/* Minimal Hamburger lines */}
-              <div className="flex flex-col gap-1 cursor-pointer hover:opacity-70 transition-opacity">
-                <span className="w-5 h-[2px] bg-[#0F172A] rounded-full" />
-                <span className="w-3.5 h-[2px] bg-[#0F172A] rounded-full" />
-              </div>
-
-              {/* Brand Logo with black circle dot */}
+              {/* Brand Logo with circle dot */}
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full bg-[#0F172A] flex items-center justify-center text-white">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                <div className="w-6 h-6 rounded-full bg-[#0F172A] flex items-center justify-center text-white shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-white" />
                 </div>
-                <span className="font-display font-extrabold text-base tracking-tight text-[#0F172A]">
-                  codecrew
+                <span className="font-display font-extrabold text-lg tracking-tight text-[#0F172A]">
+                  CodeCrew
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-mono font-bold">
+                  v2.0
                 </span>
               </div>
             </div>
@@ -52,10 +59,10 @@ export const AwsmdHero: React.FC<AwsmdHeroProps> = ({ onOpenWorkspace, onOpenAut
               </button>
               <button
                 type="button"
-                onClick={() => onOpenAuth('signup')}
-                className="px-4 py-1.5 rounded-full bg-[#0F172A] text-white text-xs font-tech font-medium hover:bg-black transition-all cursor-pointer shadow-xs"
+                onClick={onOpenWorkspace}
+                className="px-4 py-1.5 rounded-full bg-[#0F172A] text-white text-xs font-tech font-bold uppercase tracking-wider hover:bg-black transition-all cursor-pointer shadow-xs"
               >
-                get started
+                open studio
               </button>
             </div>
           </div>
@@ -64,31 +71,32 @@ export const AwsmdHero: React.FC<AwsmdHeroProps> = ({ onOpenWorkspace, onOpenAut
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto py-6 z-10">
             {/* Left Content (6 cols) */}
             <div className="lg:col-span-6 space-y-6">
-              {/* Eyebrow */}
+              {/* Live Pill Status */}
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="flex items-center gap-2 text-xs font-mono text-[#0F172A] font-medium tracking-tight"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-mono text-[#0F172A] font-semibold tracking-tight"
               >
-                <span>→ the autonomous engineering crew for your codebase</span>
+                <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                <span>5 Autonomous Agents Ready for Your Repo</span>
               </motion.div>
 
-              {/* Headline with Double-Pill Lens Badge (Exact Reference Style) */}
+              {/* Headline with Double-Pill Lens Badge */}
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-display text-[#0F172A] leading-[1.08] tracking-tight"
+                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-display text-[#0F172A] leading-[1.06] tracking-tight"
               >
-                <span>Keep your</span>
+                <span>Deploy your</span>
                 <br />
                 <span className="inline-flex items-center my-1">
                   <span className="pill-outline-lens py-0.5 px-3.5 mx-1 text-[#0F172A]">
-                    code
+                    AI crew
                   </span>
                 </span>
-                <span>autonomous.</span>
+                <span>to main.</span>
               </motion.h1>
 
               {/* Description */}
@@ -96,25 +104,25 @@ export const AwsmdHero: React.FC<AwsmdHeroProps> = ({ onOpenWorkspace, onOpenAut
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-xs sm:text-sm text-slate-500 font-tech leading-relaxed max-w-md"
+                className="text-xs sm:text-sm text-slate-600 font-tech leading-relaxed max-w-md"
               >
-                Turn engineering prompts into tested, production-ready GitHub Pull Requests. CodeCrew ingests your AST, writes type-safe diffs, runs test suites, and opens verified PRs in minutes.
+                CodeCrew plans multi-file refactors, writes backend APIs, designs responsive UI, validates tests in isolated sandboxes, and opens verified GitHub Pull Requests in seconds.
               </motion.p>
 
-              {/* Pill Action Buttons (Exact Reference Styling) */}
+              {/* Action Buttons */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="flex flex-wrap items-center gap-3.5 pt-2"
+                className="flex flex-wrap items-center gap-3.5 pt-1"
               >
                 {/* Black Oblong Pill Button */}
                 <button
                   type="button"
                   onClick={onOpenWorkspace}
-                  className="flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-[#0F172A] hover:bg-black text-white text-xs font-tech font-semibold uppercase tracking-wider transition-all duration-200 hover:scale-105 shadow-md cursor-pointer"
+                  className="flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-[#0F172A] hover:bg-black text-white text-xs font-tech font-bold uppercase tracking-wider transition-all duration-200 hover:scale-105 shadow-md cursor-pointer"
                 >
-                  <span>launch crew</span>
+                  <span>Launch Agent Studio</span>
                   <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">
                     <ArrowUpRight className="w-3 h-3 text-white" />
                   </div>
@@ -124,10 +132,34 @@ export const AwsmdHero: React.FC<AwsmdHeroProps> = ({ onOpenWorkspace, onOpenAut
                 <button
                   type="button"
                   onClick={() => onOpenAuth('signup')}
-                  className="px-6 py-2.5 rounded-full border-[1.5px] border-[#0F172A] hover:bg-slate-50 text-[#0F172A] text-xs font-tech font-medium transition-all duration-200 cursor-pointer"
+                  className="px-6 py-2.5 rounded-full border-[1.5px] border-[#0F172A] hover:bg-slate-50 text-[#0F172A] text-xs font-tech font-semibold transition-all duration-200 cursor-pointer"
                 >
-                  try for free
+                  Connect GitHub App
                 </button>
+              </motion.div>
+
+              {/* Quick Sample Prompts */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="space-y-2 pt-2"
+              >
+                <span className="text-[10px] font-mono uppercase text-slate-400 font-semibold block">
+                  Quick Engineering Prompts:
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {SAMPLE_PROMPTS.map((prompt, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={onOpenWorkspace}
+                      className="px-3 py-1 rounded-lg bg-[#F8FAFC] border border-slate-200 hover:border-[#0F172A] hover:bg-white text-[11px] font-tech text-slate-700 transition-all cursor-pointer"
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
               </motion.div>
             </div>
 
@@ -137,10 +169,13 @@ export const AwsmdHero: React.FC<AwsmdHeroProps> = ({ onOpenWorkspace, onOpenAut
             </div>
           </div>
 
-          {/* Bottom Labels inside card (From reference) */}
-          <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 select-none pt-4 border-t border-slate-100">
-            <span>autonomous engineering platform</span>
-            <span>codecrew studio</span>
+          {/* Bottom Labels inside card */}
+          <div className="flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-400 select-none pt-4 border-t border-slate-100 gap-2">
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+              LangGraph State Graph Checkpointed in PostgreSQL
+            </span>
+            <span>Zero Data Retention · Air-Gapped Sandboxing</span>
           </div>
         </div>
       </div>

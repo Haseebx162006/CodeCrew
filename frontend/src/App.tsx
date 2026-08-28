@@ -3,8 +3,12 @@ import { LenisProvider } from './components/landing/LenisProvider';
 import { CustomCursor } from './components/landing/CustomCursor';
 import { ModernistNavbar } from './components/layout/ModernistNavbar';
 import { AwsmdHero } from './components/landing/AwsmdHero';
+import { AgentCollectiveSection } from './components/landing/AgentCollectiveSection';
+import { LiveWorkflowSimulator } from './components/landing/LiveWorkflowSimulator';
 import { ModernistShowcase } from './components/landing/ModernistShowcase';
 import { ModernistArchitecture, ModernistBenchmarks, ModernistFooter } from './components/landing/ModernistArchitecture';
+import { ComparisonSection } from './components/landing/ComparisonSection';
+import { LandingFaq } from './components/landing/LandingFaq';
 import { ModernistStudio } from './components/workspace/ModernistStudio';
 import { ModernistAuthModal } from './components/auth/ModernistAuthModal';
 import { SuperheroAgentsShowcase } from './components/superhero/SuperheroAgentsShowcase';
@@ -77,14 +81,18 @@ export const App: React.FC = () => {
 
         {/* View Switcher: Reference-Style Modernist Hero Showcase vs Pro Studio */}
         {activeView === 'landing' ? (
-          <main className="relative z-10 pt-16">
+          <main className="relative z-10 pt-16 space-y-6 sm:space-y-10">
             <AwsmdHero
               onOpenWorkspace={handleOpenWorkspace}
               onOpenAuth={handleOpenAuth}
             />
+            <AgentCollectiveSection />
+            <LiveWorkflowSimulator />
             <ModernistShowcase />
             <ModernistArchitecture />
+            <ComparisonSection />
             <ModernistBenchmarks />
+            <LandingFaq />
             <ModernistFooter
               onOpenWorkspace={handleOpenWorkspace}
               onOpenAuth={() => handleOpenAuth('signup')}
