@@ -19,3 +19,21 @@ class TaskRecord(Base):
     status = Column(String, default="queued")  # queued, running, completed, failed
     error = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class UserRecord(Base):
+    """
+    Stores user account information and authentication credentials.
+    """
+    __tablename__ = "users"
+
+    id = Column(String, primary_key=True)
+    email = Column(String, unique=True, index=True, nullable=False)
+    name = Column(String, nullable=False)
+    hashed_password = Column(String, nullable=False)
+    github_username = Column(String, nullable=True)
+    github_access_token = Column(String, nullable=True)
+    address = Column(String, nullable=True)
+    avatar_url = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+

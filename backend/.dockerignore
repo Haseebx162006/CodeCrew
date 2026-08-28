@@ -10,4 +10,5 @@ htmlcov
 .env
 .env.*
 !.env.example
+codecrew-agent-haseeb.2026-08-27.private-key
 *.log

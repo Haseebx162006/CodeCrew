@@ -1,0 +1,31 @@
+# Environments & Secrets
+.env
+*.env
+*.pem
+*.key
+codecrew-agent-*.pem
+
+# Python Virtual Environments
+.venv/
+venv/
+env/
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Cloned repositories & dynamic scratch
+temp_repos/
+repos/
+cloned_repos/
+scratch/
+
+# System & Editor
+.DS_Store
+.vscode/
+.idea/

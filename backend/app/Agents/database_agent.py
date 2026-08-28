@@ -6,6 +6,7 @@ from Schema.schema import SubTask
 from Tools.tools import read_file, write_file, search_code
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.graph import StateGraph, START, END
+from db.checkpointer import get_checkpointer
 
 try:
     from Agents.agent_state import AgentState
@@ -23,7 +24,7 @@ class DatabaseAgent:
 
     def __init__(self):
         self.llm = create_llm(
-            settings.GROQ_API_KEY
+            settings.get_groq_key("database")
         )
 
         self.llm_with_tools = self.llm.bind_tools(
@@ -39,10 +40,11 @@ class DatabaseAgent:
         response = self.llm_with_tools.invoke(
             state["messages"]
         )
-
         return {
             "messages": [response]
         }
+
+
 
     def build_graph(self):
         graph = StateGraph(AgentState)
@@ -60,7 +62,7 @@ class DatabaseAgent:
             }
         )
         graph.add_edge("tools", "llm")
-        return graph.compile()
+        return graph.compile(checkpointer=get_checkpointer())
 
     def execute(
         self,
@@ -68,15 +70,21 @@ class DatabaseAgent:
         subtask: SubTask,
         context: dict[str, Any] | str | None = None,
         analysis: dict[str, Any] | str | None = None,
-        detected: dict[str, Any] | str | None = None
+        detected: dict[str, Any] | str | None = None,
+        session_id: str | None = None,
     ) -> dict:
+        safe_context = str(context)[:400] if context else "None"
+        safe_analysis = str(analysis)[:400] if analysis else "None"
+        safe_detected = str(detected)[:300] if detected else "None"
+
         prompt_messages = self.prompt.format_messages(
-            repo_path=repo_path,
+            repo_path=str(repo_path),
             subtask=subtask.description,
-            context=context,
-            analysis=analysis,
-            detected=detected
+            context=safe_context,
+            analysis=safe_analysis,
+            detected=safe_detected
         )
+
 
         initial_state: AgentState = {
             "messages": prompt_messages,
@@ -87,7 +95,10 @@ class DatabaseAgent:
             "detected": detected
         }
 
-        result = self.graph.invoke(initial_state)
+        thread_id = f"{session_id}_database" if session_id else subtask.id
+        config = {"configurable": {"thread_id": thread_id}}
+
+        result = self.graph.invoke(initial_state, config=config)
         last_message = result["messages"][-1] if result.get("messages") else None
 
         return {
@@ -98,5 +109,4 @@ class DatabaseAgent:
         }
 
 
-# Backwards compatibility alias and default instance
 database_agent = DatabaseAgent()

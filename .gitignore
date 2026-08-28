@@ -1,0 +1,64 @@
+# Environment & Secret Files
+.env
+*.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+codecrew-agent-*.pem
+
+# Dependencies
+node_modules/
+*/node_modules/
+.venv/
+*/.venv/
+venv/
+*/venv/
+ENV/
+env/
+
+# Python Cache & Bytecode
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Node / Frontend Build
+dist/
+*/dist/
+build/
+*/build/
+.next/
+out/
+.vercel/
+
+# TypeScript & Build Info
+*.tsbuildinfo
+
+# Temporary / Cloned Repositories & Agent Artifacts
+temp_repos/
+repos/
+cloned_repos/
+scratch/
+
+# Operating System & IDE Files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

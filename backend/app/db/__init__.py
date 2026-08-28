@@ -1,5 +1,5 @@
 from db.session import Base, engine, AsyncSessionLocal, get_db, init_db
-from db.models import TaskRecord, SubTaskRecord
+from db.models import TaskRecord, UserRecord
 
 __all__ = [
     "Base",
@@ -8,5 +8,6 @@ __all__ = [
     "get_db",
     "init_db",
     "TaskRecord",
-    "SubTaskRecord",
+    "UserRecord",
 ]
+
