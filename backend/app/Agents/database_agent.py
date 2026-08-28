@@ -99,7 +99,7 @@ class DatabaseAgent:
         thread_id = f"{session_id}_{subtask.id}" if session_id else subtask.id
         config = {
             "configurable": {"thread_id": thread_id},
-            "recursion_limit": 15
+            "recursion_limit": 40
         }
 
         try:
