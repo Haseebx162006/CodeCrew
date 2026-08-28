@@ -34,8 +34,8 @@ export const WelcomeIntroPreloader: React.FC<WelcomeIntroPreloaderProps> = ({ on
       return;
     }
 
-    const COUNT_DURATION = 4800; // 4.8s from 0 to 100%
-    const TOTAL_DURATION = 6000; // 6.0s total before curtain slide
+    const COUNT_DURATION = 6400; // 6.4s from 0 to 100%
+    const TOTAL_DURATION = 8000; // 8.0s total before curtain slide
     const startTime = performance.now();
 
     let animationFrameId: number;
