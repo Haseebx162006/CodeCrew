@@ -95,8 +95,12 @@ class FrontendAgent:
             "detected": detected
         }
 
-        thread_id = f"{session_id}_frontend" if session_id else subtask.id
-        config = {"configurable": {"thread_id": thread_id}}
+        # Config with subtask-scoped thread_id prevents message history accumulation
+        thread_id = f"{session_id}_{subtask.id}" if session_id else subtask.id
+        config = {
+            "configurable": {"thread_id": thread_id},
+            "recursion_limit": 6
+        }
 
         result = self.graph.invoke(initial_state, config=config)
         last_message = result["messages"][-1] if result.get("messages") else None

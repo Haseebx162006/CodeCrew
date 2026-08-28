@@ -95,8 +95,12 @@ class DocsAgent:
             "detected": detected
         }
 
-        thread_id = f"{session_id}_docs" if session_id else subtask.id
-        config = {"configurable": {"thread_id": thread_id}}
+        # Thread ID scoped per subtask prevents history pollution across tasks
+        thread_id = f"{session_id}_{subtask.id}" if session_id else subtask.id
+        config = {
+            "configurable": {"thread_id": thread_id},
+            "recursion_limit": 6
+        }
 
         result = self.graph.invoke(initial_state, config=config)
         last_message = result["messages"][-1] if result.get("messages") else None
