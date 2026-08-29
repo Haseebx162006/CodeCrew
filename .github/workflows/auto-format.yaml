@@ -37,7 +37,7 @@ jobs:
       - name: Format Frontend TypeScript/React Code
         working-directory: frontend
         run: |
-          npm ci
+          npm install
           npx prettier --write "src/**/*.{ts,tsx,css,json}" || true
 
       - name: Commit & Push Changes
