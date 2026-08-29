@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  # -------------------------------------------------------------
+  # Backend API Service (FastAPI + LangGraph)
+  # -------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: codecrew-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - ENVIRONMENT=development
+      - DEBUG=True
+      - DATABASE_URL=sqlite+aiosqlite:///./sql_app.db
+      # Pass through environment variables from host or .env
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - SECRET_KEY=${SECRET_KEY:-default_secret_key_change_me_in_prod}
+    env_file:
+      - path: ./backend/.env
+        required: false
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - codecrew-network
+
+  # -------------------------------------------------------------
+  # Frontend Client (React + Nginx)
+  # -------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: codecrew-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - codecrew-network
+
+networks:
+  codecrew-network:
+    driver: bridge
