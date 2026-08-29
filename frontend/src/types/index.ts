@@ -5,6 +5,7 @@ export interface User {
   address: string;
   githubConnected: boolean;
   githubUsername?: string;
+  githubToken?: string;
   avatarUrl?: string;
 }
 

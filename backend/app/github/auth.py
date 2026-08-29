@@ -116,3 +116,69 @@ async def get_repo_installation_token(
         print(f"Failed to auto-resolve installation token for {owner}/{repo}: {err}")
 
     return None
+
+
+async def resolve_github_token_for_repo(
+    owner: str,
+    repo: str,
+    explicit_token: str | None = None,
+    installation_id: int | None = None,
+    db_session: Any = None,
+) -> str | None:
+    """
+    Resolves a valid GitHub token using a 4-tier resolution hierarchy:
+    1. Explicit token provided with the request.
+    2. Stored user OAuth access token in the database.
+    3. Auto-resolved GitHub App installation token (via .pem and GITHUB_APP_ID).
+    4. Server environment fallback token (settings.GITHUB_TOKEN or GITHUB_PAT).
+    """
+    import os
+    from settings.config import settings
+
+    # 1. Explicit token provided with task
+    if explicit_token and explicit_token.strip():
+        return explicit_token.strip()
+
+    # 2. Provided installation_id
+    if installation_id and settings.GITHUB_APP_ID and settings.private_key:
+        try:
+            token = await get_installation_token(
+                installation_id=installation_id,
+                app_id=settings.GITHUB_APP_ID,
+                private_key=settings.private_key,
+            )
+            if token:
+                return token
+        except Exception:
+            pass
+
+    # 3. Auto-resolve repository installation token via GitHub App
+    if settings.GITHUB_APP_ID and settings.private_key:
+        try:
+            token = await get_repo_installation_token(
+                owner=owner,
+                repo=repo,
+                app_id=settings.GITHUB_APP_ID,
+                private_key=settings.private_key,
+            )
+            if token:
+                return token
+        except Exception:
+            pass
+
+    # 4. Authenticated user's OAuth access token from database
+    if db_session is not None:
+        try:
+            import db.crud as crud
+            gh_user = await crud.get_latest_github_user(db_session)
+            if gh_user and gh_user.github_access_token:
+                return gh_user.github_access_token
+        except Exception:
+            pass
+
+    # 5. Server-level environment fallback token (GITHUB_TOKEN / GITHUB_PAT)
+    env_token = settings.resolved_github_token or os.getenv("GITHUB_TOKEN") or os.getenv("GITHUB_PAT")
+    if env_token and env_token.strip():
+        return env_token.strip()
+
+    return None

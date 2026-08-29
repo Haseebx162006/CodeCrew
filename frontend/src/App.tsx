@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { LenisProvider } from './components/landing/LenisProvider';
 import { CustomCursor } from './components/landing/CustomCursor';
 import { WelcomeIntroPreloader } from './components/landing/WelcomeIntroPreloader';
@@ -11,27 +11,22 @@ import { ModernistArchitecture, ModernistBenchmarks, ModernistFooter } from './c
 import { ComparisonSection } from './components/landing/ComparisonSection';
 import { LandingFaq } from './components/landing/LandingFaq';
 import { ModernistStudio } from './components/workspace/ModernistStudio';
-import { ModernistAuthModal } from './components/auth/ModernistAuthModal';
+import { LoginPage } from './components/auth/LoginPage';
+import { SignUpPage } from './components/auth/SignUpPage';
 import { SuperheroAgentsShowcase } from './components/superhero/SuperheroAgentsShowcase';
 import { TaskHistoryDrawer } from './components/workspace/TaskHistoryDrawer';
 import { NotificationToast } from './components/ui/NotificationToast';
 import { useAppStore } from './store/appStore';
 
 export const App: React.FC = () => {
-  const { showHeroShowcase, setShowHeroShowcase, initAuth, isAuthenticated } = useAppStore();
-  
-  // Persist and restore active view on page refresh
-  const [activeView, setActiveView] = useState<'landing' | 'workspace'>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('active_view');
-      if (saved === 'workspace' || saved === 'landing') return saved;
-      if (localStorage.getItem('auth_token')) return 'workspace';
-    }
-    return 'landing';
-  });
-
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('signup');
+  const {
+    showHeroShowcase,
+    setShowHeroShowcase,
+    initAuth,
+    isAuthenticated,
+    activeView,
+    setActiveView,
+  } = useAppStore();
 
   // Verify stored session on app mount
   useEffect(() => {
@@ -40,24 +35,18 @@ export const App: React.FC = () => {
 
   // Keep view in sync if auth state changes
   useEffect(() => {
-    if (isAuthenticated && !localStorage.getItem('active_view')) {
+    if (isAuthenticated && (activeView === 'login' || activeView === 'signup')) {
       setActiveView('workspace');
-      localStorage.setItem('active_view', 'workspace');
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, activeView, setActiveView]);
 
-  const handleSetView = (view: 'landing' | 'workspace') => {
-    setActiveView(view);
-    localStorage.setItem('active_view', view);
+  const handleOpenWorkspace = () => {
+    setActiveView('workspace');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleOpenAuth = (mode: 'login' | 'signup' = 'signup') => {
-    setAuthModalMode(mode);
-    setIsAuthModalOpen(true);
-  };
-
-  const handleOpenWorkspace = () => {
-    handleSetView('workspace');
+    setActiveView(mode);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -75,48 +64,53 @@ export const App: React.FC = () => {
         {/* Trailing Spring Magnetic Cursor */}
         <CustomCursor />
 
-        {/* Clean Pill Navbar */}
-        <ModernistNavbar
-          onOpenWorkspace={handleOpenWorkspace}
-          onOpenAuth={handleOpenAuth}
-          activeView={activeView}
-          setActiveView={handleSetView}
-        />
-
-        {/* View Switcher: Reference-Style Modernist Hero Showcase vs Pro Studio */}
-        {activeView === 'landing' ? (
-          <main className="relative z-10 pt-16 space-y-6 sm:space-y-10">
-            <AwsmdHero
-              onOpenWorkspace={handleOpenWorkspace}
-              onOpenAuth={handleOpenAuth}
-            />
-            <AgentCollectiveSection />
-            <LiveWorkflowSimulator />
-            <ModernistShowcase />
-            <ModernistArchitecture />
-            <ComparisonSection />
-            <ModernistBenchmarks />
-            <LandingFaq />
-            <ModernistFooter
-              onOpenWorkspace={handleOpenWorkspace}
-              onOpenAuth={() => handleOpenAuth('signup')}
-            />
+        {/* Render View Based on Active Route / State */}
+        {activeView === 'login' ? (
+          <main className="relative z-10">
+            <LoginPage />
+          </main>
+        ) : activeView === 'signup' ? (
+          <main className="relative z-10">
+            <SignUpPage />
           </main>
         ) : (
-          <main className="relative z-10 pt-16">
-            <ModernistStudio />
-          </main>
+          <>
+            {/* Clean Pill Navbar for Landing and Workspace */}
+            <ModernistNavbar
+              onOpenWorkspace={handleOpenWorkspace}
+              onOpenAuth={handleOpenAuth}
+              activeView={activeView}
+              setActiveView={setActiveView}
+            />
+
+            {activeView === 'landing' ? (
+              <main className="relative z-10 pt-16 space-y-6 sm:space-y-10">
+                <AwsmdHero
+                  onOpenWorkspace={handleOpenWorkspace}
+                  onOpenAuth={handleOpenAuth}
+                />
+                <AgentCollectiveSection />
+                <LiveWorkflowSimulator />
+                <ModernistShowcase />
+                <ModernistArchitecture />
+                <ComparisonSection />
+                <ModernistBenchmarks />
+                <LandingFaq />
+                <ModernistFooter
+                  onOpenWorkspace={handleOpenWorkspace}
+                  onOpenAuth={() => handleOpenAuth('signup')}
+                />
+              </main>
+            ) : (
+              <main className="relative z-10 pt-16">
+                <ModernistStudio />
+              </main>
+            )}
+          </>
         )}
 
         {/* Slide-over Task History Drawer */}
         <TaskHistoryDrawer />
-
-        {/* Modernist White Modal (Sign Up / Sign In) */}
-        <ModernistAuthModal
-          isOpen={isAuthModalOpen}
-          onClose={() => setIsAuthModalOpen(false)}
-          initialMode={authModalMode}
-        />
 
         {/* Cinematic Superhero Agents Showcase (Appears after auth) */}
         <SuperheroAgentsShowcase

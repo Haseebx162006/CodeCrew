@@ -11,6 +11,7 @@ interface AppState {
   isAuthLoading: boolean;
   authError: string | null;
   authView: 'login' | 'signup';
+  activeView: 'landing' | 'workspace' | 'login' | 'signup';
   showHeroShowcase: boolean;
 
   // Workspace state
@@ -30,6 +31,7 @@ interface AppState {
   notifications: NotificationItem[];
 
   // Actions
+  setActiveView: (view: 'landing' | 'workspace' | 'login' | 'signup') => void;
   setShowHeroShowcase: (show: boolean) => void;
   setAuthView: (view: 'login' | 'signup') => void;
   setAuthError: (error: string | null) => void;
@@ -116,6 +118,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   isAuthLoading: false,
   authError: null,
   authView: 'signup',
+  activeView: (typeof window !== 'undefined' && (localStorage.getItem('active_view') as any)) || 'landing',
   showHeroShowcase: false,
   repositories: [],
   selectedRepo: null,
@@ -140,6 +143,12 @@ export const useAppStore = create<AppState>((set, get) => ({
     },
   ],
 
+  setActiveView: (view) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('active_view', view);
+    }
+    set({ activeView: view, authError: null });
+  },
   setShowHeroShowcase: (show) => set({ showHeroShowcase: show }),
   setAuthView: (view) => set({ authView: view, authError: null }),
   setAuthError: (error) => set({ authError: error }),
@@ -558,6 +567,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         repoUrl: repo.url,
         taskDescription: prompt,
         baseBranch: state.selectedBranch || repo.defaultBranch,
+        githubToken: state.user?.githubToken || undefined,
         sessionId: state.user?.id,
       });
       if (res && res.taskId) {

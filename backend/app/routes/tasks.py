@@ -18,7 +18,7 @@ _TASK_RESULTS: dict[str, dict] = {}
 
 
 from github.pr import parse_repo_info
-from github.auth import get_installation_token, get_repo_installation_token
+from github.auth import get_installation_token, get_repo_installation_token, resolve_github_token_for_repo
 
 
 async def process_task(task_id: str, req: TaskRequest):
@@ -28,54 +28,23 @@ async def process_task(task_id: str, req: TaskRequest):
 
     try:
         owner, repo_name = parse_repo_info(req.repo_url)
-        token = req.github_token
 
-        # 1. Try provided installation_id
-        if not token and req.installation_id and settings.GITHUB_APP_ID and settings.private_key:
-            try:
-                token = await get_installation_token(
-                    installation_id=req.installation_id,
-                    app_id=settings.GITHUB_APP_ID,
-                    private_key=settings.private_key,
-                )
-                logger.info(f"[{task_id}] Got token via installation_id={req.installation_id}")
-            except Exception as err:
-                logger.warning(f"[{task_id}] Installation token from installation_id failed: {err}")
+        # Resolve token using 4-tier hierarchy (explicit, DB OAuth, GitHub App, env fallback)
+        async with AsyncSessionLocal() as db:
+            token = await resolve_github_token_for_repo(
+                owner=owner,
+                repo=repo_name,
+                explicit_token=req.github_token,
+                installation_id=req.installation_id,
+                db_session=db,
+            )
 
-        # 2. Auto-resolve repository installation token via GitHub App
-        if not token and settings.GITHUB_APP_ID and settings.private_key:
-            try:
-                token = await get_repo_installation_token(
-                    owner=owner,
-                    repo=repo_name,
-                    app_id=settings.GITHUB_APP_ID,
-                    private_key=settings.private_key,
-                )
-                if token:
-                    logger.info(f"[{task_id}] Auto-resolved installation token for {owner}/{repo_name}")
-                else:
-                    logger.warning(
-                        f"[{task_id}] No installation found for {owner}/{repo_name}. "
-                        f"Install the GitHub App at: https://github.com/apps/codecrew-agent-haseeb/installations/new"
-                    )
-            except Exception as err:
-                logger.warning(f"[{task_id}] Auto-resolve installation token failed: {err}")
-
-        # 3. Fallback to authenticated user's OAuth access token in database
-        if not token:
-            try:
-                async with AsyncSessionLocal() as db:
-                    gh_user = await crud.get_latest_github_user(db)
-                    if gh_user and gh_user.github_access_token:
-                        token = gh_user.github_access_token
-                        logger.info(f"[{task_id}] Using stored GitHub OAuth access token from user: {gh_user.github_username or gh_user.email}")
-            except Exception as err:
-                logger.warning(f"[{task_id}] Stored user token lookup failed: {err}")
-
-        if not token:
-            logger.error(
-                f"[{task_id}] No GitHub token available — push and PR creation will be SKIPPED. "
-                f"Either set GITHUB_CLIENT_SECRET or install the GitHub App on {owner}/{repo_name}."
+        if token:
+            logger.info(f"[{task_id}] Successfully resolved GitHub token for repository: {owner}/{repo_name}")
+        else:
+            logger.warning(
+                f"[{task_id}] No GitHub access token resolved. Push and PR creation will be skipped. "
+                f"To fix: Provide GITHUB_TOKEN in backend .env, connect GitHub in workspace, or install GitHub App on {owner}/{repo_name}."
             )
 
         # Run the full agent pipeline with session memory & branch continuation
@@ -220,19 +189,12 @@ async def merge_task(task_id: str):
                 owner, repo_name = parse_repo_info(task.repo_url)
                 pr_number = int(task.pr_url.split("/pull/")[-1].split("/")[0])
 
-                # Resolve token for GitHub App or authenticated user
-                token = None
-                if settings.GITHUB_APP_ID and settings.private_key:
-                    token = await get_repo_installation_token(
-                        owner=owner,
-                        repo=repo_name,
-                        app_id=settings.GITHUB_APP_ID,
-                        private_key=settings.private_key,
-                    )
-                if not token:
-                    gh_user = await crud.get_latest_github_user(db)
-                    if gh_user and gh_user.github_access_token:
-                        token = gh_user.github_access_token
+                # Resolve token using 4-tier hierarchy
+                token = await resolve_github_token_for_repo(
+                    owner=owner,
+                    repo=repo_name,
+                    db_session=db,
+                )
 
                 if token:
                     github_merge_result = await merge_pull_request(

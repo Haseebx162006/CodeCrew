@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     ClientID: str = ""
     GITHUB_CLIENT_ID: str = ""
     GITHUB_CLIENT_SECRET: str = ""
+    GITHUB_TOKEN: str = ""
+    GITHUB_PAT: str = ""
     # LangSmith Tracing & Observability
     LANGSMITH_TRACING: str = "true"
     LANGCHAIN_TRACING_V2: str = "true"
@@ -59,6 +61,12 @@ class Settings(BaseSettings):
         """Returns GitHub OAuth / App Client ID stripped of whitespace."""
         cid = self.GITHUB_CLIENT_ID or self.ClientID
         return cid.strip() if cid else ""
+
+    @property
+    def resolved_github_token(self) -> str:
+        """Returns GitHub access token or personal access token (PAT) from env vars."""
+        tok = self.GITHUB_TOKEN or self.GITHUB_PAT
+        return tok.strip() if tok else ""
 
 
     @property

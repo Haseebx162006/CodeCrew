@@ -5,8 +5,8 @@ import { useAppStore } from '../../store/appStore';
 interface ModernistNavbarProps {
   onOpenWorkspace: () => void;
   onOpenAuth: (mode?: 'login' | 'signup') => void;
-  activeView: 'landing' | 'workspace';
-  setActiveView: (view: 'landing' | 'workspace') => void;
+  activeView: 'landing' | 'workspace' | 'login' | 'signup';
+  setActiveView: (view: 'landing' | 'workspace' | 'login' | 'signup') => void;
 }
 
 export const ModernistNavbar: React.FC<ModernistNavbarProps> = ({
