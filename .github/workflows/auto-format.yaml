@@ -1,0 +1,46 @@
+name: Auto-Format Code
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  auto-format:
+    name: Auto Format & Commit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Python & Ruff
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Format Backend Python Code
+        working-directory: backend
+        run: |
+          pip install ruff
+          ruff format .
+          ruff check --fix . || true
+
+      - name: Setup Node & Prettier
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Format Frontend TypeScript/React Code
+        working-directory: frontend
+        run: |
+          npm ci
+          npx prettier --write "src/**/*.{ts,tsx,css,json}" || true
+
+      - name: Commit & Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: automated code & config formatting [skip ci]"
